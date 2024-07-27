@@ -35,6 +35,8 @@ clickContainerEl.addEventListener("click", onClick);
 clickContainerEl.addEventListener("contextmenu", onContextMenu);
 
 function onClick() {
+  console.log("onClick", state);
+
   const isIntervalActive = !!state.timerInterval;
   const isPaused = !!state.pausedAt;
 
@@ -62,6 +64,8 @@ function onClick() {
 }
 
 function onContextMenu(e) {
+  console.log("onContextMenu", state);
+
   e.preventDefault();
 
   if (state.intervalType === INTERVAL_TYPES.work) {
@@ -75,6 +79,8 @@ function onContextMenu(e) {
 }
 
 function startInterval(interval) {
+  console.log("startInterval", state);
+
   if (state.timerInterval) {
     clearInterval(state.timerInterval);
   }
@@ -89,6 +95,8 @@ function startInterval(interval) {
 }
 
 function pauseTimer() {
+  console.log("pauseTimer", state);
+
   clearInterval(state.timerInterval);
   state.timerInterval = null;
 
@@ -98,6 +106,8 @@ function pauseTimer() {
 }
 
 function continueTimer() {
+  console.log("continueTimer", state);
+
   state.startedAt += Date.now() - state.pausedAt;
   state.pausedAt = null;
   state.timerInterval = setInterval(onTick, 1000);
