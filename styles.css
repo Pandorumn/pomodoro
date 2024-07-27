@@ -1,40 +1,62 @@
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100%;
+}
+
+body {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #000;
   color: #fff;
   font-family: Arial, sans-serif;
+  box-shadow: 0 0 0px inset;
+  transition: box-shadow 0.3s ease;
 }
 
-.center {
-  font-size: 5em;
+body:not(.work):not(.break) {
+  box-shadow: 0 0 50px inset;
+}
+
+body.work {
+  background-color: #002c66;
+}
+
+body.break {
+  background-color: #005a72;
+}
+
+body.work.overdue {
+  box-shadow: 0 0 100px 15px inset rgba(255, 0, 0);
+  color: rgb(255, 0, 0);
+}
+
+body.break.overdue {
+  box-shadow: 0 0 100px 15px inset rgb(255, 30, 30);
+  color: rgb(255, 30, 30);
+}
+
+body.work.paused {
+  color: rgb(255, 140, 0);
+  box-shadow: 0 0 100px 10px inset rgb(255, 140, 0);
+}
+
+body.break.paused {
+  color: rgb(255, 140, 0);
+  box-shadow: 0 0 100px 10px inset rgb(255, 111, 0);
+}
+
+#click-container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+}
+
+#timer {
+  font-size: 3rem;
   text-align: center;
-}
-
-.border-blue {
-  border: 10px solid blue;
-}
-
-.border-orange {
-  border: 10px solid orange;
-  animation: fadeOrange 1s infinite alternate;
-}
-
-.border-red {
-  border: 10px solid red;
-  animation: fadeRed 1s infinite alternate;
-}
-
-@keyframes fadeOrange {
-  from { border-color: orange; }
-  to { border-color: #000; }
-}
-
-@keyframes fadeRed {
-  from { border-color: red; }
-  to { border-color: #000; }
 }

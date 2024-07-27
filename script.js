@@ -1,14 +1,109 @@
-let timerDisplay = document.getElementById("timer-display");
-let timerInterval;
-let isPaused = false;
-let isOverdue = false;
-let timerType = "blue"; // 'blue' for 25 min, 'green' for 5 min
-let startTime, pausedTime, overdueStartTime;
+const mainContainerEl = document.querySelector("body");
+const clickContainerEl = document.getElementById("click-container");
+const timerEl = document.getElementById("timer");
+
+const INTERVAL_TYPES = {
+  work: "work",
+  break: "break",
+};
+
+const INTERVALS = {
+  [INTERVAL_TYPES.work]: { name: INTERVAL_TYPES.work, duration: 25 * 60 },
+  [INTERVAL_TYPES.break]: { name: INTERVAL_TYPES.break, duration: 5 * 60 },
+};
+
+const state = {
+  intervalType: null,
+  timerInterval: null,
+  isOverdue: false,
+  startedAt: null,
+  pausedAt: null,
+};
+
+const arr = [
+  "work",
+  "work paused",
+  "work overdue",
+  "break",
+  "break paused",
+  "break overdue",
+];
+
+clickContainerEl.addEventListener("click", onClick);
+
+function onClick() {
+  const isIntervalActive = !!state.timerInterval;
+  const isPaused = !!state.pausedAt;
+
+  if (isPaused) {
+    continueInterval();
+    return;
+  }
+
+  if (!isIntervalActive) {
+    startInterval(INTERVALS.work);
+    return;
+  }
+
+  if (isIntervalActive) {
+    if (isOverdue) {
+      startInterval(
+        state.intervalType === INTERVALS.work ? INTERVALS.break : INTERVALS.work
+      );
+    } else {
+      pauseTimer();
+    }
+  }
+}
+
+function startInterval(intervalType) {
+  const interval = INTERVALS[intervalType];
+
+  state.intervalType = intervalType;
+  state.isOverdue = false;
+  state.startedAt = Date.now();
+  state.timerInterval = setInterval(onTick, 1000);
+
+  mainContainerEl.classList.value = interval.name;
+}
+
+function startTimer(duration) {
+  state.startedAt = Date.now();
+  state.timerInterval = setInterval(onTick, 1000);
+}
+
+function pauseTimer() {
+  clearInterval(state.timerInterval);
+
+  state.pausedAt = Date.now();
+
+  mainContainerEl.classList.add("paused");
+}
+
+function continueTimer() {
+  state.startedAt += Date.now() - state.pausedAt;
+  state.pausedAt = null;
+
+  timerEl.classList.remove("paused");
+}
+
+function onTick() {
+  const elapsed = Math.floor((Date.now() - state.startedAt) / 1000);
+
+  if (elapsed >= duration) {
+    mainContainerEl.classList.add("overdue");
+    setDisplayedTime(`+${formatTime(elapsed)}`);
+  } else {
+    mainContainerEl.classList.remove("overdue");
+    setDisplayedTime(formatTime(duration - elapsed));
+  }
+}
 
 function formatTime(seconds) {
-  let hours = Math.floor(seconds / 3600);
-  let minutes = Math.floor((seconds % 3600) / 60);
-  let secs = seconds % 60;
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
   if (hours > 0) {
     return `${hours}:${minutes.toString().padStart(2, "0")}:${secs
       .toString()
@@ -18,67 +113,6 @@ function formatTime(seconds) {
   }
 }
 
-function updateDisplay(time) {
-  timerDisplay.textContent = formatTime(time);
+function setDisplayedTime(time) {
+  timerEl.textContent = time;
 }
-
-function startTimer(duration) {
-  startTime = Date.now();
-  timerInterval = setInterval(() => {
-    let elapsed = Math.floor((Date.now() - startTime) / 1000);
-    if (elapsed >= duration) {
-      clearInterval(timerInterval);
-      isOverdue = true;
-      overdueStartTime = Date.now();
-      timerDisplay.style.backgroundColor = "blue";
-      timerDisplay.classList.add("border-red");
-      startStopwatch();
-    } else {
-      updateDisplay(duration - elapsed);
-    }
-  }, 1000);
-}
-
-function startStopwatch() {
-  timerInterval = setInterval(() => {
-    let elapsed = Math.floor((Date.now() - overdueStartTime) / 1000);
-    timerDisplay.textContent = `+${formatTime(elapsed)}`;
-  }, 1000);
-}
-
-timerDisplay.addEventListener("click", () => {
-  if (isPaused) {
-    let pausedDuration = Math.floor((Date.now() - pausedTime) / 1000);
-    startTime += pausedDuration * 1000;
-    overdueStartTime += pausedDuration * 1000;
-    timerDisplay.classList.remove("border-orange");
-    timerDisplay.classList.add(isOverdue ? "border-red" : "border-blue");
-    isPaused = false;
-    if (isOverdue) {
-      startStopwatch();
-    } else {
-      startTimer(timerType === "blue" ? 25 * 60 : 5 * 60);
-    }
-  } else {
-    if (timerInterval) {
-      clearInterval(timerInterval);
-      pausedTime = Date.now();
-      isPaused = true;
-      timerDisplay.classList.remove("border-blue", "border-red");
-      timerDisplay.classList.add("border-orange");
-    } else {
-      if (isOverdue) {
-        isOverdue = false;
-        timerType = timerType === "blue" ? "green" : "blue";
-        startTimer(timerType === "blue" ? 25 * 60 : 5 * 60);
-        timerDisplay.style.backgroundColor =
-          timerType === "blue" ? "blue" : "green";
-        timerDisplay.classList.add("border-blue");
-      } else {
-        startTimer(25 * 60);
-        timerDisplay.style.backgroundColor = "blue";
-        timerDisplay.classList.add("border-blue");
-      }
-    }
-  }
-});
