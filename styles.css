@@ -1,0 +1,29 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #000;
+  margin: 0;
+}
+
+.timer {
+  color: #fff;
+  font-size: 5rem;
+  cursor: pointer;
+  text-align: center;
+  border: 10px solid transparent;
+  transition: border-color 0.5s;
+}
+
+.blue {
+  background-color: blue;
+}
+
+.green {
+  background-color: green;
+}
+
+.red-border {
+  border-color: red;
+}
