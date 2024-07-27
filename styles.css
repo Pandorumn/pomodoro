@@ -1,29 +1,40 @@
-body {
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   background-color: #000;
-  margin: 0;
-}
-
-.timer {
   color: #fff;
-  font-size: 5rem;
-  cursor: pointer;
+  font-family: Arial, sans-serif;
+}
+
+.center {
+  font-size: 5em;
   text-align: center;
-  border: 10px solid transparent;
-  transition: border-color 0.5s;
 }
 
-.blue {
-  background-color: blue;
+.border-blue {
+  border: 10px solid blue;
 }
 
-.green {
-  background-color: green;
+.border-orange {
+  border: 10px solid orange;
+  animation: fadeOrange 1s infinite alternate;
 }
 
-.red-border {
-  border-color: red;
+.border-red {
+  border: 10px solid red;
+  animation: fadeRed 1s infinite alternate;
+}
+
+@keyframes fadeOrange {
+  from { border-color: orange; }
+  to { border-color: #000; }
+}
+
+@keyframes fadeRed {
+  from { border-color: red; }
+  to { border-color: #000; }
 }
